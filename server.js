@@ -3,20 +3,25 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
-dotenv.config();
+const dashboardRoutes = require('./routes/dashboradroutes');
+const { authenticateToken } = require('./middleware/authMiddleware');
 
+dotenv.config(); // Load environment variables
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-const dbURI = process.env.MONGO_URI_CLOUD || 'mongodb://localhost:27017/mydatabase';
+
+// Use the MongoDB URI from the environment variable or a default local URI
+// const dbURI = process.env.MONGO_URI || 'mongodb://localhost:27017/role-based-api';
+
 // MongoDB connection
-mongoose.connect(dbURI, {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
   .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
+  .catch(err => console.log('MongoDB connection error:', err));
 
 // Routes
 app.get('/', (req, res) => {
@@ -24,6 +29,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+
+app.use('/api/dashboard', dashboardRoutes);;
 
 // Start server
 const PORT = process.env.PORT || 5000;
