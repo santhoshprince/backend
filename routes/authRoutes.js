@@ -41,32 +41,30 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  // Check if fields are provided
   if (!username || !password) {
     return res.status(400).json({ message: 'Please provide username and password' });
   }
 
   try {
-    // Find user in the database
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Generate token
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // Send token to client
-    res.json({ token });
+    // Send both token and role to the client
+    res.json({ token, role: user.role });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
+
 
 module.exports = router;
