@@ -19,6 +19,10 @@ mongoose.connect(process.env.MONGO_URI, {
   .catch(err => console.log(err));
 
 // Routes
+app.get('/', (req, res) => {
+  res.send('Welcome to the API backend!');
+});
+
 app.use('/api/auth', authRoutes);
 
 // Start server
