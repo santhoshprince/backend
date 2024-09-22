@@ -4,7 +4,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
 const dashboardRoutes = require('./routes/dashboradroutes');
-const { authenticateToken } = require('./middleware/authMiddleware');
+const productRoutes = require('./routes/products');
 
 dotenv.config(); // Load environment variables
 
@@ -30,7 +30,9 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 
-app.use('/api/dashboard', dashboardRoutes);;
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/products', productRoutes);
+
 
 // Start server
 const PORT = process.env.PORT || 5000;
